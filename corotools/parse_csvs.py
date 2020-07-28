@@ -6,11 +6,16 @@ from .base_data import dict_keyreplace, list_africancountries,  list_northameric
 
 
 def get_populations(popfile):
-    """get populations of countries from csv
-    
-    required csv format: country, number
-    
-    creates a dict with country as key"""
+    """creates a dict containing population numbers for all countries
+
+    Parameter
+    ---------
+    popfile : string giving the location of suitable popfile csv
+                  required csv format: country, number
+    Returns
+    -------
+    dioctionary
+    """
     pops = pd.read_csv(popfile, engine='python')
     popr = {}
     for x in pops['country']:
@@ -20,12 +25,19 @@ def get_populations(popfile):
 
 
 def parse_hopkins(csvfile):
-    """parse time series files from Johns Hopkin University
-    
-    works for e.g. time_series_covid19_confirmed_global.csv
-    
-    Arguments : 
-        - csvfile : csv file path"""
+    """parse time series files from Johns Hopkin University and create dictionary
+
+    Parameters:
+    ----------
+    csvfile : csv file path
+
+    Returns:
+    --------
+    dictionary containing time series of e.g. cases
+
+    * works for e.g. time_series_covid19_confirmed_global.csv
+    * cumulates numbers for some areas with oversee territories, to have a single value e.g. for GB, France
+    """
     df = pd.read_csv(csvfile)
     dtlist = [dt.datetime.strptime(x,"%m/%d/%y") for x in df.columns[4::]]
     years = np.array([x.year for x in dtlist])
@@ -88,12 +100,15 @@ def parse_hopkins(csvfile):
 
 def get_jhu_data(datadir='example_data/'):
     """parse cases, death, active, recovered from JHU data in one run
-    
-    * optional parameter: datadir: dir which contains
-        'time_series_covid19_....csv' files
-    * returns list of dictionaries:
-        [ Cases, Dead, Recovered, Active ]
-        """
+
+    Parameters:
+    ----------
+    datadir : dir which contains 'time_series_covid19_....csv' files, optional, default = 'example_data'
+
+    Returns:
+    -------
+    list of dictionaries: [ Cases, Dead, Recovered, Active ]
+    """
     Md = parse_hopkins(datadir+'time_series_covid19_confirmed_global.csv')
     Mdea = parse_hopkins(datadir+'time_series_covid19_deaths_global.csv')
     Mdrec = parse_hopkins(datadir+'time_series_covid19_recovered_global.csv')

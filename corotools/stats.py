@@ -58,6 +58,10 @@ def get_country_weekly_stat_table(list_of_time_series_dictionaries, populations_
         timeoffset : time offset in days (optional)
         tableformat : formatting used by 'tabulate' (optional)
 
+        Returns
+        -------
+        printable table (as string)
+
         """
     rd = get_country_weekly_stat(list_of_time_series_dictionaries, populations_dict, countrykey, timeoffset=timeoffset)
     L = [["cases",
@@ -126,7 +130,7 @@ def get_metatable124(list_of_time_series_dictionaries, populations_dict, country
     ignore_list : list with country keys to exclude (optional)
     timeoffset : time offset in days (optional)
 
-    returns
+    Returns
     -------
     mt, mt2, mt4 : pandas dataframes
     """
@@ -145,13 +149,13 @@ def sort_df_and_get_keys(dF, sortkey, num=10, ascending=False):
     num : number of entries in result (optional)
     ascending : boolean whether to sort ascending or not (optional
 
-    returns
+    Returns
     -------
     pandas dataframe with sorted data"""
     newDF = dF.sort_values(by=sortkey, ascending=ascending)
     return [x for x in newDF['key'][0:num] ]
 
-def get_rank_table_from_df2(dF, dF2, dF4, sortkey, 
+def get_rank_table_from_df2(metatable, metatable2, metatable4, sortkey,
                            columns, factors,
                            columnalias = None,
                            num=10, ascending=False,
@@ -159,22 +163,28 @@ def get_rank_table_from_df2(dF, dF2, dF4, sortkey,
                            tableformat = 'github',
                            floatfmt='.1f'):
     """
-    :param dF:
-    :param dF2:
-    :param dF4:
-    :param sortkey:
-    :param columns:
-    :param factors:
-    :param columnalias:
-    :param num:
-    :param ascending:
-    :param mininf:
-    :param tableformat:
-    :param floatfmt:
-    :return:
+    create a metatable comparing different countries
+
+    metatable : metatable for actual week (created by get_metatable124)
+    metatable2 : metatable for two weeks ago (created by get_metatable124)
+    metatable4 : metatable for four weeks ago created by get_metatable124)
+    sortkey : key to sort the metable (e.g. 'cases')
+    columns : list of columns to be printed
+    factors : list or array of numerical scaling factors (e.g. [1., 1/100, 100])
+    columnalias : list of column aliases (printed to the table head), optional
+    num: number of entries (column rows), optional, default = 10
+    ascending: boolean, optional, default = false
+    mininf : number of minimum infections to consider, entries with smaller values will
+            be disregarded, optional, default = 2000
+    tableformat : format for tabulate, optional, default = github
+    floatfmt : float format for tabulate, optional, default = '%.1f'
+
+    Returns
+    -------
+    printable table (as string)
     """
 
-    keyranks = sort_df_and_get_keys(dF[dF['cases']>mininf], sortkey, num=num, ascending=ascending)
+    keyranks = sort_df_and_get_keys(metatable[metatable['cases']>mininf], sortkey, num=num, ascending=ascending)
     if columnalias is None:
         cla = [x for x in columns]
     else:
@@ -182,10 +192,10 @@ def get_rank_table_from_df2(dF, dF2, dF4, sortkey,
     cla.insert(0,'country')
     cla.insert(0,'')
     LL = []
-    srtd2 = dF2[dF2['cases']>mininf].sort_values(by=sortkey, ascending=ascending, ignore_index=True)[['key',sortkey]]
-    srtd4 = dF4[dF4['cases']>mininf].sort_values(by=sortkey, ascending=ascending, ignore_index=True)[['key',sortkey]]
+    srtd2 = metatable2[metatable2['cases']>mininf].sort_values(by=sortkey, ascending=ascending, ignore_index=True)[['key',sortkey]]
+    srtd4 = metatable4[metatable4['cases']>mininf].sort_values(by=sortkey, ascending=ascending, ignore_index=True)[['key',sortkey]]
     for i, kk in enumerate(keyranks):
-        key10 =  dF[dF['key']==kk]['key10'].to_numpy()[0] #abbriev.keys
+        key10 =  metatable[metatable['key']==kk]['key10'].to_numpy()[0] #abbriev.keys
         # list index 2 and 4 weeks ago, -1 else
         i2l = srtd2[srtd2['key']==kk].index.to_list()
         i4l = srtd4[srtd4['key']==kk].index.to_list()
@@ -209,7 +219,6 @@ def get_rank_table_from_df2(dF, dF2, dF4, sortkey,
                i4+1, diffsym(i, i2), diffsym(i2, i4))
         newl = [r,  key10]
         for ii,key2 in enumerate(columns):
-            newl.append(dF[dF['key']==kk][key2] * factors[ii])
+            newl.append(metatable[metatable['key']==kk][key2] * factors[ii])
         LL.append(newl)
     return tabulate(LL, headers = cla, floatfmt=floatfmt, tablefmt=tableformat)
-
