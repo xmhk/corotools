@@ -1,5 +1,5 @@
 import datetime as dt
-
+# this file contains some geograpical data
 REFDATE = dt.datetime(2020, 1, 1)
 
 list_continents = ['Africa', 'Asia', 'Europe', 'North America','Oceania', 'South America','World']

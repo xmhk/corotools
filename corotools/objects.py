@@ -5,22 +5,27 @@ from .base_data import REFDATE
 class dateobj():
     """basic date object with some transformations
 
-    arguments:
-        y : array or list containing the year values of the time series (length n)
-        m : array or list containing the months values of the time series (length n)
-        d : array or list containing the days values of the time series (length n)
+    Parameters
+    ----------
+    y : array or list containing the year values of the time series (length n)
+    m : array or list containing the months values of the time series (length n)
+    d : array or list containing the days values of the time series (length n)
+    refdate : reference date (as datetime object), optional
 
-    optional parameters:
-       refdate : reference date
+    Data fields:
+    ------------
+    dt : time data as liste of python datetime.datetime objects
+    d : array of days, starting from startdate
+    refdate : reference date (set in initializer or in corotools base data file
+    x : time series dates normalized to range of 0 .. 1
 
-    data fields:
-           dt : time data as liste of python datetime.datetime objects
-            d : array of days, starting from startdate
-      refdate : reference date (set in initializer or in corotools base data file
-            x : time series dates normalized to range of 0 .. 1
-
-
-
+    Methods:
+    -------
+    d2x(d) : converts days to x
+    x2d(x) : converts x to days
+    d2dt(d) : converts days to datetime objects
+    x2dt(x) : converts x to datetime objects
+    adddays(n) : give an array of days (self.d) extended by n days
 
     """
     def __init__(self, y, m, d, refdate = REFDATE):
@@ -50,10 +55,28 @@ class dateobj():
     
 
 class dataset():
-    """basic time series dataset"""
-    def __init__(self, data, idtag, refdate=REFDATE):
+    """class: basic time series dataset
+
+    Parameters:
+    -----------
+    data : time series data as 4-column array (year, month, day, y-value)
+    countrykey : string
+    refdate : reference date (optional)
+
+    Data fields:
+    -----------
+    raw_data : original data array
+    countrykey : country key
+    refdate : reference date
+    y : y-values
+    normy : y values normalized to maximum
+    dy : difference of y values compared to last day in series
+    normdy : normalized difference dy
+    do : dateobj (date object) for the time series
+    """
+    def __init__(self, data, countrykey, refdate=REFDATE):
         self.raw_data = data.copy()
-        self.idtag = idtag
+        self.countrykey = countrykey
         self.refdate = refdate
         self.y = self.raw_data[:,3].copy()
         if np.max(self.y)>0:

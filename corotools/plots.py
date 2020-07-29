@@ -7,15 +7,15 @@ import numpy as np
 def plot_rates(Md, Mdea, key, figsize=(6.5,3)):
     """plot the time series of new cases and dead for a specific country
     
-    Parameters
-    ----------
+    Parameters:
+    -----------
     Md : cases dictionary created by get_jhu_data function
     Mdea : dead dictionary created by get_jhu_data function
     key: country (or continent) key for data to plot
     figsize : default (6.5,3), optional
 
-    Returns
-    -------
+    Returns:
+    --------
     list containing [figure handle, ax1 handle, ax2 handle]
     """
     adata = dataset( Md[key], key )
