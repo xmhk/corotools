@@ -72,6 +72,7 @@ list_southamericancountries = ['Argentina',
 
 list_europeancountries = ['Albania',
                           'Andorra',
+                          'Austria',
                           'Belarus',
                           'Belgium',
                           'Bosnia and Herzegovina',
