@@ -1,4 +1,5 @@
 from .objects import dataset
+from .base_data import dict_alpha3
 import numpy as np
 import pandas as pd
 from tabulate import tabulate
@@ -112,6 +113,10 @@ def get_metatable(list_of_time_series_dictionaries, populations_dict, countrykey
                 s['key10'] = k[0:10]
             else:
                 s['key10'] = k
+            if k in dict_alpha3.keys():  # add columns with iso alpha3 code
+                s['alpha3'] = dict_alpha3[k]
+            else:
+                s['alpha3'] = ''
             tmpdf = pd.DataFrame([[s[x] for x in s.keys()]],
                                 columns=[x for x in s.keys()])
             newDF=newDF.append(tmpdf,ignore_index=True)
