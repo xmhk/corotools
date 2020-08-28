@@ -1,5 +1,6 @@
 from .objects import dataset
-from .base_data import dict_alpha3
+from .base_data import dict_alpha3, list_africancountries,list_asiancountries,list_europeancountries,\
+    list_northamericancountries,list_oceaniancountries,list_southamericancountries
 import numpy as np
 import pandas as pd
 from tabulate import tabulate
@@ -114,9 +115,20 @@ def get_metatable(list_of_time_series_dictionaries, populations_dict, countrykey
             else:
                 s['key10'] = k
             if k in dict_alpha3.keys():  # add columns with iso alpha3 code
-                s['alpha3'] = dict_alpha3[k]
+                s['iso3'] = dict_alpha3[k]
             else:
-                s['alpha3'] = ''
+                s['iso3'] = ''
+
+            s['continent'] = 'none'
+            for continentcountries, continentname in zip( [list_africancountries, list_asiancountries, list_oceaniancountries,
+                                   list_europeancountries, list_northamericancountries, list_southamericancountries],
+                                           ['africa','asia','oceania','europe','north america','south america']):
+
+                if k in continentcountries:
+                    s['continent'] = continentname
+
+
+
             tmpdf = pd.DataFrame([[s[x] for x in s.keys()]],
                                 columns=[x for x in s.keys()])
             newDF=newDF.append(tmpdf,ignore_index=True)
