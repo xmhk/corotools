@@ -40,12 +40,15 @@ def plot_rates(Md, Mdea, key, figsize=(6.5,3)):
     # first subplot: cases
     ax1 = plt.subplot(211)
     plt.title(key)
-    plt.bar(adata.do.dt, adata.dy, align='center', color='r',zorder=3)
+    plt.bar(adata.do.dt, adata.dy, align='center', color='r',alpha=0.7,zorder=3)
+    plt.step(adata.do.dt, adata.dy_weekly_mean,where='mid', c='b', lw=1.5)
     plt.grid(True, which='major', zorder=1)
     plt.grid(True,which='minor', lw = 0.5, c='0.9', zorder=1)
+    
     # second subplot: dead
     ax2 = plt.subplot(212)
-    plt.bar(adatad.do.dt, adatad.dy, align='center', color='r', width=0.8, zorder=3)
+    plt.bar(adatad.do.dt, adatad.dy, align='center', color='r',alpha=0.7,zorder=3)
+    plt.step(adatad.do.dt, adatad.dy_weekly_mean,where='mid', c='b', lw=1.5)
     plt.grid(which='major')
     plt.grid(which='minor',lw=0.5, c='0.9', zorder=1)
     

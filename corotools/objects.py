@@ -16,6 +16,7 @@ class dateobj():
     ------------
     dt : time data as liste of python datetime.datetime objects
     d : array of days, starting from startdate
+    week : array with calendar weeks
     refdate : reference date (set in initializer or in corotools base data file
     x : time series dates normalized to range of 0 .. 1
 
@@ -30,6 +31,7 @@ class dateobj():
     """
     def __init__(self, y, m, d, refdate = REFDATE):
         self.dt = [dt.datetime(int(y[i]), int(m[i]), int(d[i]), 0, 0, 0) for i in np.arange(0,len(m))]
+        self.week = np.array( [dd.isocalendar()[1] for dd in self.dt] )
         self.d = np.array([(x-refdate).days for x in self.dt])     
         self.__normxoffs = self.d[0]
         self.__normx = self.d - self.__normxoffs
@@ -71,6 +73,7 @@ class dataset():
     y : y-values
     normy : y values normalized to maximum
     dy : difference of y values compared to last day in series
+    dy_weekly_mean : weekly mean of dy for each day
     normdy : normalized difference dy
     do : dateobj (date object) for the time series
     """
@@ -88,5 +91,11 @@ class dataset():
         self.dy[1::] = self.y[1::]-self.y[0:-1]
         self.normdy = self.dy / self.normyfact
         self.do = dateobj( data[:,0], data[:,1], data[:,2], refdate = REFDATE)
+        tmpl = []
+        for i, w in enumerate( self.do.week):
+            indices = np.nonzero( np.multiply(  self.do.week == w ,
+                                                np.array([x.year for x in self.do.dt])==self.do.dt[i].year))
+            tmpl.append( np.mean(  self.dy[indices] ) )
+        self.dy_weekly_mean = np.array(tmpl)
         
     
