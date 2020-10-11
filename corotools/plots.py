@@ -63,14 +63,14 @@ def plot_rates(Md, Mdea, key, figsize=(6.5,3)):
         ymin=-100
     else:
         ymin=-10
-    ax1.set_ylim([ymin, np.quantile(adata.dy, 0.95)*2])
+    ax1.set_ylim([ymin, np.quantile(adata.dy, 0.98)*2])
     
     if np.min(adatad.dy)<-10:
         ymin=-100
     else:
         ymin=-10
         
-    ax2.set_ylim([ymin, np.quantile(adatad.dy, 0.95)*2])
+    ax2.set_ylim([ymin, np.quantile(adatad.dy, 0.98)*2])
     
     ax1.set_ylabel('new cases')
     ax2.set_ylabel('new dead')
