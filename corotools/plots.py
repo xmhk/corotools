@@ -38,7 +38,6 @@ def plot_rates(Md, Mdea, key, figsize=(6.5,3), startdate=None):
         tickintervall = 2 * 28
     # index of startdate: get y scaling
     startdateindx = np.nonzero(np.array([(x - startdate).days for x in adata.do.dt]) > 0)[0][0]
-    print(startdateindx)
 
     f = plt.figure(tight_layout=True, figsize=figsize, dpi=120)
     # first subplot: cases
@@ -77,6 +76,8 @@ def plot_rates(Md, Mdea, key, figsize=(6.5,3), startdate=None):
     ax1.set_ylabel('new cases')
     ax2.set_ylabel('new dead')
 
-    for label in ax1.get_xticklabels():
-        label.set_ha("right")
-        label.set_rotation(45)
+    #for label in ax1.get_xticklabels():
+    #    label.set_ha("right")
+    #    label.set_rotation(45)
+
+    return f, ax1, ax2
